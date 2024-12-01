@@ -14,11 +14,12 @@ def index(request):
         if user is not None:
             login(request, user)
             print(user)
-            return redirect('acceuil')
+            is_admin = request.user.groups.filter(name='admin').exists()
+            return render(request, 'acceuil.html',{'is_admin': is_admin})
         else:
             messages.info(request, 'Identifiant ou mot de passe incorrect')
     form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form })
 
 def acceuil_views(request):
     return render(request, 'acceuil.html')
