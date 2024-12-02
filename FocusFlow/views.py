@@ -63,4 +63,32 @@ def create_projets(request):
         )
         projet.user.add(request.user)
         return redirect('acceuil')
-    return render(request, 'create_projet.html')
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    if is_admin:
+        projets = Projet.objects.all()
+    else:
+        projets = Projet.objects.filter(user=user)
+    context = {
+        'projets': projets,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet,
+    }
+    return render(request, 'create_projet.html', context)
+
+def show_projets(request):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    if is_admin:
+        projets = Projet.objects.all()
+    else:
+        projets = Projet.objects.filter(user=user)
+    context = {
+        'projets': projets,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet,
+    }
+    return render(request, 'projets.html', context)
+
