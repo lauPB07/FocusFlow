@@ -6,5 +6,6 @@ from FocusFlow import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('acceuil/', views.acceuil_views, name='acceuil'),
-    path('logout/', views.logout_views, name='logout')
+    path('logout/', views.logout_views, name='logout'),
+    path('createProjet/',views.create_projets, name='createProjet')
 ]

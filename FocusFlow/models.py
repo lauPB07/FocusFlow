@@ -8,6 +8,11 @@ class Projet(models.Model):
     createdBy = models.ForeignKey(User, on_delete=models.CASCADE)
     user = models.ManyToManyField(User, related_name='participes')
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.createdBy not in self.user.all():
+            self.user.add(self.createdBy)
+
 class Status(models.Model):
     nom = models.CharField(max_length=255)
 
