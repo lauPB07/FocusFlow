@@ -30,6 +30,9 @@
                         <td class="border-bottom-0">
                           <p class="mb-0 fw-normal">{{ projet.createdBy.username }}</p>
                         </td>
+                        <td class="border-bottom-0">
+                          <a href="/{{ projet.id }}/details/" class="btn btn-secondary m-1">Voir details</a>
+                        </td>
                       </tr>
                     {% endfor %}
                     </tbody>

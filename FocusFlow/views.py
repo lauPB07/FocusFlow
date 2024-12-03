@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from FocusFlow.models import Projet
@@ -66,12 +67,7 @@ def create_projets(request):
     user = request.user
     is_chefProjet = user.groups.filter(name='chef de projet').exists()
     is_admin = user.groups.filter(name='admin').exists()
-    if is_admin:
-        projets = Projet.objects.all()
-    else:
-        projets = Projet.objects.filter(user=user)
     context = {
-        'projets': projets,
         'is_admin': is_admin,
         'is_chefProjet': is_chefProjet,
     }
@@ -84,11 +80,38 @@ def show_projets(request):
     if is_admin:
         projets = Projet.objects.all()
     else:
-        projets = Projet.objects.filter(user=user)
+        projets = Projet.objects.filter(createdBy=user)
     context = {
         'projets': projets,
         'is_admin': is_admin,
         'is_chefProjet': is_chefProjet,
     }
     return render(request, 'projets.html', context)
+
+def ajouterUser_projets(request, projet_id):
+    projet = Projet.objects.get(id=projet_id)
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user')
+        if user_id:
+            user = User.objects.get(id=user_id)
+
+
+            projet.user.add(user)
+            return redirect('showProjet')
+
+    users = User.objects.all()
+    return render(request, 'add_participant.html', {
+        'projet': projet,
+        'users': users
+    })
+
+def detail_projets(request, projet_id):
+    projet = Projet.objects.get(id=projet_id)
+    context = {
+        'projets': projet
+    }
+    return render(request, 'detail_projets.html', context)
+
+
 

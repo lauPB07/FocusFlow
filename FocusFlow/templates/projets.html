@@ -38,10 +38,19 @@
                           <p class="mb-0 fw-normal">{{ projet.createdBy.username }}</p>
                         </td>
                         <td class="border-bottom-0">
-                          <a class="btn btn-secondary m-1">Ajouter un utilisateur au projet</a>
+                          <a href="/{{ projet.id }}/addParticipant/" class="btn btn-secondary m-1">Ajouter un utilisateur au projet</a>
                         </td>
                         <td class="border-bottom-0">
                           <a class="btn btn-secondary m-1">Ajouter une tache au projet</a>
+                        </td>
+                        <td class="border-bottom-0">
+                          <a class="btn btn-success m-1">Modifier</a>
+                        </td>
+                         <td class="border-bottom-0">
+                          <a class="btn btn-danger m-1">Supprimer</a>
+                        </td>
+                         <td class="border-bottom-0">
+                          <a href="/{{ projet.id }}/details/" class="btn btn-secondary m-1">Voir details</a>
                         </td>
                       </tr>
                     {% endfor %}

@@ -8,5 +8,7 @@ urlpatterns = [
     path('acceuil/', views.acceuil_views, name='acceuil'),
     path('logout/', views.logout_views, name='logout'),
     path('createProjet/',views.create_projets, name='createProjet'),
-    path('showProjet/',views.show_projets, name='showProjet')
+    path('showProjet/',views.show_projets, name='showProjet'),
+    path('<int:projet_id>/addParticipant/',views.ajouterUser_projets, name='ajouterUser_projets'),
+    path('<int:projet_id>/details/', views.detail_projets, name='details')
 ]
