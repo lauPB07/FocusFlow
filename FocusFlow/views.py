@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
@@ -33,6 +33,45 @@ def index(request):
             messages.info(request, 'Identifiant ou mot de passe incorrect')
     form = AuthenticationForm()
     return render(request, 'login.html', {'form': form })
+
+
+def register_user(request):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        first_name = request.POST.get('firstName')
+        last_name = request.POST.get('lastName')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        if not username or not email or not password:
+            messages.error(request, "Tous les champs obligatoires doivent être remplis.")
+            return render(request, 'createUser.html')
+
+
+        try:
+            user = User.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+            user.save()
+            messages.success(request, "Utilisateur créé avec succès.")
+            return redirect('showUsers')
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la création de l'utilisateur: {str(e)}")
+            return render(request, 'createUser.html')
+
+    content = {
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet
+    }
+    return render(request, 'createUser.html', content)
+
+
 
 def acceuil_views(request):
     user = request.user
@@ -122,6 +161,20 @@ def detail_projets(request, projet_id):
         'is_chefProjet': is_chefProjet
     }
     return render(request, 'detail_projets.html', context)
+
+def show_users(request):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    users = User.objects.all()
+    context = {
+        'users': users,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet
+    }
+    return render(request, 'show_users.html', context)
+
+
 
 
 
