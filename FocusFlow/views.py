@@ -89,6 +89,9 @@ def show_projets(request):
     return render(request, 'projets.html', context)
 
 def ajouterUser_projets(request, projet_id):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
     projet = Projet.objects.get(id=projet_id)
 
     if request.method == 'POST':
@@ -103,13 +106,20 @@ def ajouterUser_projets(request, projet_id):
     users = User.objects.all()
     return render(request, 'add_participant.html', {
         'projet': projet,
-        'users': users
+        'users': users,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet
     })
 
 def detail_projets(request, projet_id):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
     projet = Projet.objects.get(id=projet_id)
     context = {
-        'projets': projet
+        'projets': projet,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet
     }
     return render(request, 'detail_projets.html', context)
 
