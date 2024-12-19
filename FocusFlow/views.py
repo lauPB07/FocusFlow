@@ -103,7 +103,7 @@ def create_projets(request):
             createdBy=request.user
         )
         projet.user.add(request.user)
-        return redirect('acceuil')
+        return redirect('showProjet')
     user = request.user
     is_chefProjet = user.groups.filter(name='chef de projet').exists()
     is_admin = user.groups.filter(name='admin').exists()
@@ -135,6 +135,24 @@ def update_projet(request, projet_id):
         'is_chefProjet': is_chefProjet,
     }
     return render(request, 'update_projet.html', context)
+
+
+def delete_projet(request, projet_id):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+
+    projet = get_object_or_404(Projet, id=projet_id)
+    if request.method == 'POST':
+        projet.delete()
+        return redirect('showProjet')
+
+    context = {
+        'projet': projet,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet,
+    }
+    return render(request,'supprimer_projet.html', context)
 
 def show_projets(request):
     user = request.user
@@ -180,7 +198,7 @@ def detail_projets(request, projet_id):
     is_admin = user.groups.filter(name='admin').exists()
     projet = Projet.objects.get(id=projet_id)
     context = {
-        'projets': projet,
+        'projet': projet,
         'is_admin': is_admin,
         'is_chefProjet': is_chefProjet
     }
