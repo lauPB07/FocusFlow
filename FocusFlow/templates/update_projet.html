@@ -8,6 +8,7 @@
               <div class="card">
                 <div class="card-body">
                   <form method="post">
+                    {% csrf_token %}
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Nom du projet</label>
                       <input type="text" value="{{ projet.nom }} " name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

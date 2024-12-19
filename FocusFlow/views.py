@@ -119,8 +119,6 @@ def update_projet(request, projet_id):
     is_chefProjet = user.groups.filter(name='chef de projet').exists()
     is_admin = user.groups.filter(name='admin').exists()
     projet = get_object_or_404(Projet, id=projet_id)
-    if not request.user.groups.filter(name__in=['chef de projet', 'admin']).exists():
-        return HttpResponseForbidden("Vous n'êtes pas autorisé à modifier ce projet.")
 
     if request.method == 'POST':
         nom = request.POST.get('nom')
