@@ -2,7 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
 
 from FocusFlow.models import Projet
 
@@ -111,6 +112,31 @@ def create_projets(request):
         'is_chefProjet': is_chefProjet,
     }
     return render(request, 'create_projet.html', context)
+
+
+def update_projet(request, projet_id):
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    projet = get_object_or_404(Projet, id=projet_id)
+    if not request.user.groups.filter(name__in=['chef de projet', 'admin']).exists():
+        return HttpResponseForbidden("Vous n'êtes pas autorisé à modifier ce projet.")
+
+    if request.method == 'POST':
+        nom = request.POST.get('nom')
+        description = request.POST.get('description')
+        if nom:
+            projet.nom = nom
+        if description:
+            projet.description = description
+        projet.save()
+        return redirect('showProjet')
+    context = {
+        'projet': projet,
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet,
+    }
+    return render(request, 'update_projet.html', context)
 
 def show_projets(request):
     user = request.user
