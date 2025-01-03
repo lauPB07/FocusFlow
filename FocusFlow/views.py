@@ -216,7 +216,8 @@ def show_users(request):
     }
     return render(request, 'show_users.html', context)
 
-def create_tache(request):
+def create_tache(request, id_projet):
+    projet = Projet.objects.get(id=id_projet)
     users = User.objects.all()
     status = Status.objects.all()
     if request.method == 'POST':
@@ -233,6 +234,7 @@ def create_tache(request):
             realizedBy=realizedby,
             status=status
         )
+        tache.projet.add(projet)
         tache.user.add(request.user)
         return redirect('showProjet')
     user = request.user
