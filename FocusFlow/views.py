@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 
-from FocusFlow.models import Projet
+from FocusFlow.models import Projet, Tache, Status
 
 
 # Create your views here.
@@ -216,6 +216,35 @@ def show_users(request):
     }
     return render(request, 'show_users.html', context)
 
+def create_tache(request):
+    users = User.objects.all()
+    status = Status.objects.all()
+    if request.method == 'POST':
+        nom = request.POST.get('nom')
+        description = request.POST.get('description')
+        realizedby_id = request.POST.get('realizedby')
+        status_id = request.POST.get('status')
+        realizedby = get_object_or_404(User, id=realizedby_id)
+        status = get_object_or_404(Status, id=status_id)
+        tache = Tache.objects.create(
+            nom=nom,
+            description=description,
+            createdBy=request.user,
+            realizedBy=realizedby,
+            status=status
+        )
+        tache.user.add(request.user)
+        return redirect('showProjet')
+    user = request.user
+    is_chefProjet = user.groups.filter(name='chef de projet').exists()
+    is_admin = user.groups.filter(name='admin').exists()
+    context = {
+        'is_admin': is_admin,
+        'is_chefProjet': is_chefProjet,
+        'users': users,
+        'status': status
+    }
+    return render(request, 'create_tache.html', context)
 
 
 

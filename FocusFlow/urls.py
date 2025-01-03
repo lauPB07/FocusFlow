@@ -14,5 +14,6 @@ urlpatterns = [
     path('<int:projet_id>/update/', views.update_projet, name='update_projet'),
     path('<int:projet_id>/delete/', views.delete_projet, name='delete_projet'),
     path('showUsers/', views.show_users, name='showUsers'),
-    path('createUser/',views.register_user, name='createUser')
+    path('createUser/',views.register_user, name='createUser'),
+    path('createTache/',views.create_tache, name='createTache'),
 ]

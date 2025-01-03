@@ -8,6 +8,7 @@ class Projet(models.Model):
     createdBy = models.ForeignKey(User, on_delete=models.CASCADE)
     user = models.ManyToManyField(User, related_name='participes')
 
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.createdBy not in self.user.all():
@@ -24,5 +25,6 @@ class Tache(models.Model):
     realizedBy = models.ForeignKey(User, on_delete=models.CASCADE, related_name='realizedTasks')
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     projet = models.ManyToManyField(Projet, related_name='projetsTaches')
+    user = models.ManyToManyField(User, related_name='taches')
 
 
